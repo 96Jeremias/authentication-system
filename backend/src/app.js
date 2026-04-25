@@ -1,19 +1,25 @@
 // Crear un servidor Express básico para manejar las solicitudes de la API. Este servidor escuchará en el puerto 3000 y tendrá una ruta raíz que responde con un mensaje de confirmación. También se configura CORS para permitir solicitudes desde el frontend.
-import { pool } from "./db.js";
+import { pool } from "./config/db.js";
 import express from "express";  // Importar el módulo Express para crear el servidor y manejar las rutas.
 import cors from "cors";        // Importar el módulo CORS para permitir solicitudes desde el frontend.
+//  IMPORTAR RUTAS
+import authRoutes from "./routes/auth.routes.js";
 
 const app = express();
 
-app.use(cors());                
+// Middlewares
+app.use(cors());
 app.use(express.json());        
+
+//  USAR RUTAS
+app.use("/api", authRoutes);
 
 // Ruta raíz para verificar que la API está funcionando. Responde con un mensaje de confirmación.
 app.get("/", (req, res) => {
-  res.send("API funcionando");
+  res.send("API funcionando"); 
 });
 
-// 👇 PRUEBA DE CONEXIÓN
+//  PRUEBA DE CONEXIÓN
 pool.query("SELECT NOW()", (err, res) => {
   if (err) {
     console.error("Error conexión DB", err);
